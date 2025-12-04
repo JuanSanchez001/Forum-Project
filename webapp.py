@@ -5,6 +5,9 @@ from flask import render_template
 
 import pprint
 import os
+import pymongo
+import sys
+from bson.objectid import ObjectId
 
 # This code originally from https://github.com/lepture/flask-oauthlib/blob/master/example/github.py
 # Edited by P. Conrad for SPIS 2016 to add getting Client Id and Secret from
@@ -33,6 +36,18 @@ github = oauth.remote_app(
     authorize_url='https://github.com/login/oauth/authorize' #URL for github's OAuth login
 )
 
+connection_string = os.environ["MONGO_CONNECTION_STRING"]
+db_name = os.environ["MONGO_DBNAME"]
+    
+client = pymongo.MongoClient(connection_string)
+db = client[db_name]
+collection = db['Post'] #1. put the name of your collection in the quotes
+     # Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+      print(e)
 
 #context processors run before templates are rendered and add variable(s) to the template's context
 #context processors must return a dictionary 
