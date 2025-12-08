@@ -83,7 +83,7 @@ def authorized():
             session['user_data']=github.get('user').data
             #session['test']=request.form['test']
             message='You were successfully logged in as ' + session['user_data']['login'] + '.'
-            return redirect(url_for('renderPage3'))
+            return redirect(url_for('renderPage1'))
         except Exception as inst:
             session.clear()
             print(inst)
@@ -93,39 +93,12 @@ def authorized():
 
 @app.route('/page1')
 def renderPage1():
-    if 'user_data' in session:
-        user_data_pprint = pprint.pformat(session['user_data'])#format the user data nicely
-    else:
-        user_data_pprint = '';
-    return render_template('page1.html',dump_user_data=user_data_pprint)
-
-@app.route('/page2')
-def renderPage2():
-    if 'user_data' in session:
-        url_pprint = pprint.pformat(session['user_data']['html_url'])#format the user data nicely
-        login_pprint = pprint.pformat(session['user_data']['login'])#format the user data nicely
-        view_pprint = pprint.pformat(session['user_data']['user_view_type'])#format the user data nicely
-        followers_pprint = pprint.pformat(session['user_data']['followers_url'])#format the user data nicely
-    else:
-        url_pprint = '';
-        login_pprint = '';
-        view_pprint = '';
-        followers_pprint = '';
-    return render_template('page2.html',specific1_user_data=url_pprint,specific2_user_data=login_pprint,specific3_user_data=view_pprint,specific4_user_data=followers_pprint)
-    
-@app.route('/page3',methods=['GET','POST'])
-def renderPage3():
     if request.method == 'POST':
         if "resultColor" not in session:
             session["resultColor"]=request.form['resultColor']
         
     
-    return render_template('page3.html')    
-    
-@app.route('/page4')
-def renderPage4():
-    return render_template('page4.html')
-
+    return render_template('page1.html')
 
 #the tokengetter is automatically called to check who is logged in.
 @github.tokengetter
