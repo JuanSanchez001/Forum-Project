@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, session, request, jsonify
+from flask import Flask, redirect, url_for, session, request, jsonify, request
 from flask_oauthlib.client import OAuth
 #from flask_oauthlib.contrib.apps import github #import to make requests to GitHub's OAuth
 from flask import render_template
@@ -35,19 +35,19 @@ github = oauth.remote_app(
     access_token_url='https://github.com/login/oauth/access_token',  
     authorize_url='https://github.com/login/oauth/authorize' #URL for github's OAuth login
 )
-
-connection_string = os.environ["MONGO_CONNECTION_STRING"]
-db_name = os.environ["MONGO_DBNAME"]
+def main():
+    connection_string = os.environ["MONGO_CONNECTION_STRING"]
+    db_name = os.environ["MONGO_DBNAME"]
     
-client = pymongo.MongoClient(connection_string)
-db = client[db_name]
-collection = db['Post'] #1. put the name of your collection in the quotes
+    client = pymongo.MongoClient(connection_string)
+    db = client[db_name]
+    collection = db['Post'] #1. put the name of your collection in the quotes
      # Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-      print(e)
+    try:
+        client.admin.command('ping')
+        print("Pinged your deployment. You successfully connected to MongoDB!")
+    except Exception as e:
+        print(e)
 
 #context processors run before templates are rendered and add variable(s) to the template's context
 #context processors must return a dictionary 
@@ -81,7 +81,9 @@ def authorized():
         try:
             session['github_token'] = (resp['access_token'], '') #save the token to prove that the user logged in
             session['user_data']=github.get('user').data
+            #session['test']=request.form['test']
             message='You were successfully logged in as ' + session['user_data']['login'] + '.'
+            return redirect(url_for('renderPage3'))
         except Exception as inst:
             session.clear()
             print(inst)
@@ -110,6 +112,20 @@ def renderPage2():
         view_pprint = '';
         followers_pprint = '';
     return render_template('page2.html',specific1_user_data=url_pprint,specific2_user_data=login_pprint,specific3_user_data=view_pprint,specific4_user_data=followers_pprint)
+    
+@app.route('/page3',methods=['GET','POST'])
+def renderPage3():
+    if request.method == 'POST':
+        if "resultColor" not in session:
+            session["resultColor"]=request.form['resultColor']
+        
+    
+    return render_template('page3.html')    
+    
+@app.route('/page4')
+def renderPage4():
+    return render_template('page4.html')
+
 
 #the tokengetter is automatically called to check who is logged in.
 @github.tokengetter
@@ -119,3 +135,31 @@ def get_github_oauth_token():
 
 if __name__ == '__main__':
     app.run()
+
+
+
+
+
+'''
+ex.{
+  "_id": ObjectId("60d5ec49f7e5f3a9e3d4f1c1"),
+  "title": "How to design a schema for forum posts in MongoDB?",
+  "content": "I'm building a forum and need help with the data model. What are the best practices for storing posts and comments?",
+  "author": {
+    "user_id": ObjectId("5099803df3f4948bd2f98391"),
+    "username": "MongoDB_User"
+  },
+  "category": "Schema Design",
+  "tags": ["data modeling", "best practices", "forum"],
+  "views": 1250000,
+  "created_at": ISODate("2025-12-05T12:00:00Z"),
+  "updated_at": ISODate("2025-12-05T12:30:00Z"),
+  "is_published": true,
+  "comments_count": 42
+}
+'''
+
+'''Start of project
+
+make github repo, add starter code, connect with mongodb through python, make code from like secure quiz app in order to save user responses or in this cas 'posts'. Example above.
+Goal is to allow a user to make something similar above. responses from a user are collected through session and sent to mongodb atlas where they are in a database collection and document.'''
