@@ -3,13 +3,13 @@
 {% block title %}page1{% endblock %}
 
 {% block content %}
-  
-  
-<h1>Page 1: What color does yellow and blue make</h1>
 
  <form action={{ url_for("renderPage1") }} method="POST">
+  Title:
+  <input type="text" name="title">
+  <br>
   What color does yellow and blue make?:<br>
-  <input type="text" name="test">
+  <input type="text" name="content">
   <input type="submit" value="Submit">
  </form> 
 

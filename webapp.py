@@ -35,19 +35,19 @@ github = oauth.remote_app(
     access_token_url='https://github.com/login/oauth/access_token',  
     authorize_url='https://github.com/login/oauth/authorize' #URL for github's OAuth login
 )
-def main():
-    connection_string = os.environ["MONGO_CONNECTION_STRING"]
-    db_name = os.environ["MONGO_DBNAME"]
+
+connection_string = os.environ["MONGO_CONNECTION_STRING"]
+db_name = os.environ["MONGO_DBNAME"]
     
-    client = pymongo.MongoClient(connection_string)
-    db = client[db_name]
-    collection = db['Post'] #1. put the name of your collection in the quotes
+client = pymongo.MongoClient(connection_string)
+db = client[db_name]
+collection = db['Post'] #1. put the name of your collection in the quotes
      # Send a ping to confirm a successful connection
-    try:
-        client.admin.command('ping')
-        print("Pinged your deployment. You successfully connected to MongoDB!")
-    except Exception as e:
-        print(e)
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
 
 #context processors run before templates are rendered and add variable(s) to the template's context
 #context processors must return a dictionary 
@@ -91,13 +91,17 @@ def authorized():
     return render_template('message.html', message=message)
 
 
-@app.route('/page1')
+@app.route('/page1', methods=['GET', 'POST'])
 def renderPage1():
     if request.method == 'POST':
-        if "resultColor" not in session:
-            session["resultColor"]=request.form['resultColor']
-        
-    
+ 
+        post = {
+                "Title": request.form['title'],
+                "Content": request.form['content'], 
+                #"Username": request.form['test']
+            }
+        collection.insert_one(post)
+
     return render_template('page1.html')
 
 #the tokengetter is automatically called to check who is logged in.
@@ -107,7 +111,8 @@ def get_github_oauth_token():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
+    
 
 
 
