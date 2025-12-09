@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}All Posts{% endblock %}
+
+{% block content %}
+  <h2>All Forum Posts</h2>
+  {% if posts %}
+    <ul class="list-group">
+      {% for post in posts %}
+        <li class="list-group-item">
+          <a href="{{ url_for('view_post', post_id=post['_id']) }}">
+            {{ post['title'] }}
+          </a>
+          <br>
+          <small>
+			by {{ post.author.username if post.author is defined else 'Unknown' }}
+			| {{ post.views if post.views is defined else 0 }} views
+		  </small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No posts yet. <a href="{{ url_for('renderPage1') }}">Create one!</a></p>
+  {% endif %}
+{% endblock %}
