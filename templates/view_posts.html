@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}{{ post['title'] }}{% endblock %}
+
+{% block content %}
+  <h2>{{ post['title'] }}</h2>
+  <p><strong>By:</strong> {{ post['author']['username'] }}</p>
+  <p><strong>Posted on:</strong> {{ post['created_at'] }}</p>
+  <p><strong>Views:</strong> {{ post['views'] }}</p>
+  <hr>
+  <p>{{ post['content'] }}</p>
+  <hr>
+  <a href="{{ url_for('list_posts') }}" class="btn btn-default">← Back to all posts</a>
+{% endblock %}
