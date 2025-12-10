@@ -15,7 +15,8 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
     {% if logged_in %}
-		<li><a href="/page1">Page 1</a></li>
+		  <li><a href="{{ url_for('list_posts') }}">Forum</a></li>
+          <li><a href="{{ url_for('renderPage1') }}">Make Post</a></li>
     {% endif %}
       </ul>
       

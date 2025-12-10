@@ -5,10 +5,11 @@
 {% block content %}
 
  <form action={{ url_for("renderPage1") }} method="POST">
-  Title:
+  Title of Post:
+  <br>
   <input type="text" name="title">
   <br>
-  What color does yellow and blue make?:<br>
+  Write a Post:<br>
   <input type="text" name="content">
   <input type="submit" value="Submit">
  </form> 

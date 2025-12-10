@@ -8,6 +8,7 @@ import os
 import pymongo
 import sys
 from bson.objectid import ObjectId
+from datetime import datetime
 
 # This code originally from https://github.com/lepture/flask-oauthlib/blob/master/example/github.py
 # Edited by P. Conrad for SPIS 2016 to add getting Client Id and Secret from
@@ -83,26 +84,48 @@ def authorized():
             session['user_data']=github.get('user').data
             #session['test']=request.form['test']
             message='You were successfully logged in as ' + session['user_data']['login'] + '.'
-            return redirect(url_for('renderPage1'))
+            return redirect(url_for('list_posts'))
         except Exception as inst:
             session.clear()
             print(inst)
             message='Unable to login, please try again.  '
     return render_template('message.html', message=message)
 
-
 @app.route('/page1', methods=['GET', 'POST'])
 def renderPage1():
     if request.method == 'POST':
- 
+        user = session['user_data']
         post = {
-                "Title": request.form['title'],
-                "Content": request.form['content'], 
-                #"Username": request.form['test']
-            }
+                "title": request.form['title'],
+                "content": request.form['content'], 
+                "username": user['login'],
+                "created_at" : datetime.now(),
+                "is_published": True
+               }
         collection.insert_one(post)
-
+        return redirect(url_for('list_posts'))
     return render_template('page1.html')
+
+@app.route('/posts')
+def list_posts():
+    posts = list(collection.find().sort("created_at", -1))
+    return render_template('posts.html', posts=posts)
+    
+@app.route('/post/<post_id>')
+def view_post(post_id):
+    post = collection.find_one({"_id": ObjectId(post_id)})
+    return render_template('view_post.html', post=post)
+    return render_template('message.html', message="Post not found.")
+'''@app.route('/post/<post_id>')
+def view_post(post_id):
+    post = collection.find_one({"_id": ObjectId(post_id)})
+    if post:
+        collection.update_one({"_id": ObjectId(post_id)}, {"$inc": {"views": 1}})
+        post['views'] += 1
+        return render_template('view_post.html', post=post)
+    return render_template('message.html', message="Post not found.")'''
+
+
 
 #the tokengetter is automatically called to check who is logged in.
 @github.tokengetter
@@ -113,10 +136,6 @@ def get_github_oauth_token():
 if __name__ == '__main__':
     app.run(debug=True)
     
-
-
-
-
 
 '''
 ex.{
@@ -139,5 +158,33 @@ ex.{
 
 '''Start of project
 
-make github repo, add starter code, connect with mongodb through python, make code from like secure quiz app in order to save user responses or in this cas 'posts'. Example above.
-Goal is to allow a user to make something similar above. responses from a user are collected through session and sent to mongodb atlas where they are in a database collection and document.'''
+make github repo, add starter code, connect with mongodb through python, make code from like mongodb practice make dictionarys in this cas 'posts'. Example above.
+Goal is to allow a user to make something similar above. responses from a user are collected through dictionaries and sent to mongodb atlas where they are in a 
+database  collection and document.'''
+
+''''''
+    
+'''
+@app.route('/page1', methods=['GET', 'POST'])
+def renderPage1():
+    if 'github_token' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        user = session['user_data']
+        post = {
+            "title": request.form['title'],
+            "content": request.form['content'],
+            "author": {
+                "username": user['login'],
+                "github_id": user['id']
+            },
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow(),
+            "views": 0,
+            "is_published": True
+        }
+        collection.insert_one(post)
+        return redirect(url_for('list_posts'))
+
+    return render_template('page1.html')'''    
