@@ -116,16 +116,6 @@ def view_post(post_id):
     post = collection.find_one({"_id": ObjectId(post_id)})
     return render_template('view_post.html', post=post)
     return render_template('message.html', message="Post not found.")
-'''@app.route('/post/<post_id>')
-def view_post(post_id):
-    post = collection.find_one({"_id": ObjectId(post_id)})
-    if post:
-        collection.update_one({"_id": ObjectId(post_id)}, {"$inc": {"views": 1}})
-        post['views'] += 1
-        return render_template('view_post.html', post=post)
-    return render_template('message.html', message="Post not found.")'''
-
-
 
 #the tokengetter is automatically called to check who is logged in.
 @github.tokengetter
@@ -136,55 +126,3 @@ def get_github_oauth_token():
 if __name__ == '__main__':
     app.run(debug=True)
     
-
-'''
-ex.{
-  "_id": ObjectId("60d5ec49f7e5f3a9e3d4f1c1"),
-  "title": "How to design a schema for forum posts in MongoDB?",
-  "content": "I'm building a forum and need help with the data model. What are the best practices for storing posts and comments?",
-  "author": {
-    "user_id": ObjectId("5099803df3f4948bd2f98391"),
-    "username": "MongoDB_User"
-  },
-  "category": "Schema Design",
-  "tags": ["data modeling", "best practices", "forum"],
-  "views": 1250000,
-  "created_at": ISODate("2025-12-05T12:00:00Z"),
-  "updated_at": ISODate("2025-12-05T12:30:00Z"),
-  "is_published": true,
-  "comments_count": 42
-}
-'''
-
-'''Start of project
-
-make github repo, add starter code, connect with mongodb through python, make code from like mongodb practice make dictionarys in this cas 'posts'. Example above.
-Goal is to allow a user to make something similar above. responses from a user are collected through dictionaries and sent to mongodb atlas where they are in a 
-database  collection and document.'''
-
-''''''
-    
-'''
-@app.route('/page1', methods=['GET', 'POST'])
-def renderPage1():
-    if 'github_token' not in session:
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
-        user = session['user_data']
-        post = {
-            "title": request.form['title'],
-            "content": request.form['content'],
-            "author": {
-                "username": user['login'],
-                "github_id": user['id']
-            },
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow(),
-            "views": 0,
-            "is_published": True
-        }
-        collection.insert_one(post)
-        return redirect(url_for('list_posts'))
-
-    return render_template('page1.html')'''    
