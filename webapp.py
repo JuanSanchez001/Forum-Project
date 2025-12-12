@@ -82,7 +82,6 @@ def authorized():
         try:
             session['github_token'] = (resp['access_token'], '') #save the token to prove that the user logged in
             session['user_data']=github.get('user').data
-            #session['test']=request.form['test']
             message='You were successfully logged in as ' + session['user_data']['login'] + '.'
             return redirect(url_for('list_posts'))
         except Exception as inst:
