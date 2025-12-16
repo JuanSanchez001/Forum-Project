@@ -19,6 +19,7 @@ app = Flask(__name__)
 
 app.debug = False #Change this to False for production
 
+#AI used: https://www.perplexity.ai/search/i-got-this-error-while-trying-QA2BPcZVRPeq4vOMPVEmtg, https://www.perplexity.ai/search/using-flask-6Z7gSoadTjqG1qt00ICCUw.
 
 app.secret_key = os.environ['SECRET_KEY'] #used to sign session cookies
 oauth = OAuth(app)
